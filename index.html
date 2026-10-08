@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Результат процедуры</title>
 <style>
-:root{--gold:#b88727;--gold2:#d7ad55;--dark:#342716;--paper:#f7eedc}
+:root{--gold:#b88727;--gold2:#d7ad55;--dark:#342716;--paper:#f7eedc;--red:#8c2d22}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 15%,#fffaf0,#ead9b8);color:var(--dark);font-family:Georgia,"Times New Roman",serif}
 .card{width:min(760px,100%);background:linear-gradient(145deg,#fffaf0,var(--paper));border:2px solid var(--gold);padding:42px 34px 30px;position:relative;box-shadow:0 18px 60px #6d522522}
@@ -27,9 +27,17 @@ h1{text-align:center;letter-spacing:.13em;font-size:clamp(25px,6vw,42px);margin:
 .stamp{margin:26px auto 18px;border:3px double var(--gold);width:max-content;max-width:100%;padding:10px 18px;text-align:center;font-weight:bold;letter-spacing:.07em;transform:rotate(-2deg)}
 button{display:block;margin:24px auto 0;border:1px solid #8f6215;background:linear-gradient(#c99b3f,#a87519);color:#fff;padding:14px 24px;font:600 16px Georgia;cursor:pointer;box-shadow:0 5px 15px #6d522533}
 button:hover{filter:brightness(1.06)}
-#surprise{display:none;text-align:center;margin-top:24px;font-size:19px;line-height:1.45}
+#surprise,#stage{display:none;margin-top:24px}
+#stage{padding:20px;border:1px solid #b8872766;background:#fffaf05c}
+.scan-title{text-align:center;text-transform:uppercase;letter-spacing:.12em;font-weight:bold;font-size:18px;color:#9b6a15}
+.log{margin-top:18px;font-family:"Courier New",monospace;font-size:14px;line-height:1.8}
+.ok{color:#4f6d34}.wait{color:#9b6a15}.warn{color:var(--red);font-weight:bold}
+.big-alert{text-align:center;font-size:clamp(25px,6vw,40px);font-weight:bold;color:var(--red);line-height:1.15;margin:20px 0}
+.final-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.final-item{text-align:center;border-bottom:1px solid #b8872766;padding:10px}.final-item small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.7}.final-item b{font-size:20px;color:#9b6a15}
+.final-stamp{margin:24px auto 8px;border:3px double var(--gold);padding:12px;max-width:520px;text-align:center;font-weight:bold;letter-spacing:.08em;transform:rotate(-1deg)}
 .footer{text-align:center;margin-top:28px;font-size:11px;letter-spacing:.07em;opacity:.64}
-@media(max-width:560px){.grid{grid-template-columns:1fr}.card{padding:30px 20px}}
+@media(max-width:560px){.grid,.final-grid{grid-template-columns:1fr}.card{padding:30px 20px}}
 </style>
 </head>
 <body>
@@ -51,14 +59,84 @@ button:hover{filter:brightness(1.06)}
 <div class="line"></div>
 <p class="note">Поздравляем! Вы официально готовы смотреть на жизнь с другой стороны.</p>
 <div class="stamp">ОДОБРЕНО<br>КОМИССИЕЙ ПО ОСОБО ЧИСТЫМ ЗАДНИЦАМ</div>
-<button onclick="document.getElementById('surprise').style.display='block';this.style.display='none'">ПОЛУЧИТЬ СЕРТИФИКАТ РЕЗУЛЬТАТА</button>
-<div id="surprise">
-<div class="line"></div>
-<div style="font-size:28px;color:#9b6a15;font-weight:bold">ПОЗДРАВЛЯЕМ!</div>
-<p>Ваш результат настолько хорош, что дальнейшее вмешательство не требуется.</p>
-<p><b>Можно просто жить и наслаждаться.</b></p>
-</div>
+
+<button id="startBtn">ПОЛУЧИТЬ СЕРТИФИКАТ РЕЗУЛЬТАТА</button>
+
+<section id="stage">
+  <div class="scan-title" id="stageTitle">Подготовка итогового отчёта...</div>
+  <div class="log" id="log"></div>
+  <div id="alert" style="display:none">
+    <div class="big-alert">ОШИБКА</div>
+    <p style="text-align:center;font-style:italic;font-size:18px">Обнаружен аномально высокий уровень блеска.</p>
+    <div class="log" style="text-align:center">Запущена повторная калибровка...</div>
+  </div>
+  <div id="final" style="display:none">
+    <div class="big-alert" style="color:#9b6a15">РЕЗУЛЬТАТ ПРЕВЗОШЁЛ<br>ДОПУСТИМЫЕ НОРМЫ</div>
+    <div class="final-grid">
+      <div class="final-item"><small>Блеск</small><b>147%</b></div>
+      <div class="final-item"><small>Гладкость</small><b>132%</b></div>
+      <div class="final-item"><small>Уверенность</small><b>189%</b></div>
+      <div class="final-item"><small>Пригодность к повторному использованию</small><b>ОПАСНО ВЫСОКАЯ</b></div>
+    </div>
+    <div class="final-stamp">ЭТАЛОН ЧИСТОЙ ЖОПЫ<br>СТАТУС ПРИСВОЕН АВТОМАТИЧЕСКИ</div>
+    <button id="revealBtn">ПОКАЗАТЬ, ЧТО ИМЕННО ПРОИЗОШЛО</button>
+  </div>
+</section>
+
+<section id="surprise">
+  <div class="line"></div>
+  <div style="font-size:28px;color:#9b6a15;font-weight:bold;text-align:center">ПОЗДРАВЛЯЕМ!</div>
+  <p style="text-align:center;font-size:19px;line-height:1.5">Процедура прошла настолько успешно, что дальнейшее вмешательство не требуется.</p>
+  <p style="text-align:center;font-size:23px"><b>Можно просто жить и наслаждаться.</b></p>
+  <div class="final-stamp">Внимание: повторное посещение может вызвать привыкание.</div>
+</section>
+
 <div class="footer">Документ носит исключительно юмористический характер · Сертификат действителен в хорошем настроении</div>
 </main>
+
+<script>
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const startBtn=document.getElementById('startBtn');
+const stage=document.getElementById('stage');
+const log=document.getElementById('log');
+const alertBox=document.getElementById('alert');
+const finalBox=document.getElementById('final');
+const surprise=document.getElementById('surprise');
+
+startBtn.addEventListener('click',async()=>{
+  startBtn.style.display='none';
+  stage.style.display='block';
+  log.innerHTML='';
+  const lines=[
+    ['Проверка гладкости','OK'],
+    ['Проверка отражающей способности','OK'],
+    ['Проверка уровня чистоты','OK'],
+    ['Проверка отсутствия следов','OK'],
+    ['Определение степени привыкания','WAIT']
+  ];
+  for(const [label,state] of lines){
+    await sleep(650);
+    const row=document.createElement('div');
+    row.className=state==='OK'?'ok':'wait';
+    row.textContent=label+' '.repeat(Math.max(2,34-label.length))+state;
+    log.appendChild(row);
+  }
+  await sleep(900);
+  alertBox.style.display='block';
+  await sleep(1900);
+  alertBox.style.display='none';
+  log.innerHTML='';
+  document.getElementById('stageTitle').textContent='Повторная калибровка завершена';
+  await sleep(700);
+  finalBox.style.display='block';
+  finalBox.scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+document.getElementById('revealBtn').addEventListener('click',()=>{
+  document.getElementById('revealBtn').style.display='none';
+  surprise.style.display='block';
+  surprise.scrollIntoView({behavior:'smooth',block:'center'});
+});
+</script>
 </body>
 </html>
